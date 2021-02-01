@@ -80,5 +80,15 @@ namespace StringCalculator.Tests
             // assert
             Assert.Equal(2, result);
         }
+        [Fact]
+        public void Delimiters_Can_Be_Of_Any_Length()
+        {
+            // arrange
+            var calculate = new Calculator();
+            // act
+            var result = calculate.Add("//[***]\n1***2***3");
+            // assert
+            Assert.Equal(6, result);
+        }
     }
 }
