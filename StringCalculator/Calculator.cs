@@ -16,7 +16,7 @@ namespace StringCalculator
                 var sum = 0;
                 var numbers = integers.Split(',', '\n', ';');
                 var numList = new List<int>();
-                sum = FindNegativeNumbers(sum, numbers, numList);
+                sum = FindNumbers(sum, numbers, numList);
                 ThrowsException(numList);
                 return sum;
             }
@@ -33,15 +33,27 @@ namespace StringCalculator
             }
         }
 
-        private static int FindNegativeNumbers(int sum, string[] numbers, List<int> numList)
+        private static int FindNumbers(int sum, string[] numbers, List<int> numList)
         {
             foreach (string number in numbers)
             {
                 Int32.TryParse(number, out var num);
-                if (num < 0) numList.Add(num);
+                num = IgnoreBigNumbers(num);
+                AddNegativeNumbersToList(numList, num);
                 sum = sum + num;
             }
             return sum;
+        }
+
+        private static void AddNegativeNumbersToList(List<int> numList, int num)
+        {
+            if (num < 0) numList.Add(num);
+        }
+
+        private static int IgnoreBigNumbers(int num)
+        {
+            if (num >= 1000) num = 0;
+            return num;
         }
     }
 }

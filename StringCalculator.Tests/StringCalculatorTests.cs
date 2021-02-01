@@ -70,5 +70,15 @@ namespace StringCalculator.Tests
             Assert.Equal("Hello World", String.Concat(hello, " ", world));
             Assert.Equal("Hello World", String.Join(" ", new List<string>() { hello, world }));
         }
+        [Fact]
+        public void Numbers_Greater_Or_Equal_To_1000_Should_Be_Ignored()
+        {
+            // arrange
+            var calculate = new Calculator();
+            // act
+            var result = calculate.Add("1000,1001,2");
+            // assert
+            Assert.Equal(2, result);
+        }
     }
 }
