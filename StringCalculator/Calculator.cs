@@ -14,7 +14,7 @@ namespace StringCalculator
             if (integers != " ")
             {
                 var sum = 0;
-                var numbers = integers.Split(',', '\n', ';', '[', ']', '*');
+                var numbers = integers.Split(',', '\n', ';', '*');
                 var numList = new List<int>();
                 sum = FindNumbers(sum, numbers, numList);
                 ThrowsException(numList);
