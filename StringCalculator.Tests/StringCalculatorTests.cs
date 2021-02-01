@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Xunit;
 
 namespace StringCalculator.Tests
@@ -45,6 +46,29 @@ namespace StringCalculator.Tests
         {
             Assert.Equal(expected, new Calculator().Add(actual));
         }
-        
+        [Fact]
+        public void Support_Single_Character_Delimiter()
+        {
+            Assert.Equal(3, new Calculator().Add("//;\n1;2"));
+        }
+        [Fact]
+        public void Calling_Add_With_A_Negative_Number_Will_Throw_An_Exception()
+        {
+            // arrange
+            var calculate = new Calculator();
+            // act
+            var result = Assert.Throws<ArgumentException>(() => calculate.Add("-1,2,-3"));
+            // assert
+            Assert.Equal("Negatives not allowed: -1, -3", result.Message);
+        }
+        [Fact]
+        public void testName()
+        {
+            var hello = "Hello";
+            var world = "World";
+            Assert.Equal("Hello World", ($"{hello} {world}"));
+            Assert.Equal("Hello World", String.Concat(hello, " ", world));
+            Assert.Equal("Hello World", String.Join(" ", new List<string>() { hello, world }));
+        }
     }
 }
