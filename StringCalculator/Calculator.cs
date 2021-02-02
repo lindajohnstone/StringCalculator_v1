@@ -15,60 +15,15 @@ namespace StringCalculator
             {
                 var numbers = integers.Split(',', '\n', ';', '*');
                 var numList = new List<int>();
-                var sum = FindNumbers(numbers, numList);
+                var sum = 0;
+                List<int> numbersToAdd = GetNumbers(numbers);
+                FindNegativeNumbers(numbersToAdd);
                 ThrowsException(numList);
+                List<int> bigNumbers = FindBigNumbers(numbersToAdd);
+                sum = AddNumbers(bigNumbers);
                 return sum;
             }
             return 0;
-        }
-
-        private static void ThrowsException(List<int> numList)
-        {
-            if (numList.Count > 0)
-            {
-                var message = "Negatives not allowed: ";
-                message = String.Concat(message, String.Join(", ", numList));
-                throw new ArgumentException(message);
-            }
-        }
-
-        private static int FindNumbers(string[] numbers, List<int> numList)
-        {
-            var sum = 0;
-            List<int> numbersToAdd = GetNumbers(numbers);
-            List<int> bigNumbers = FindBigNumbers(numbersToAdd);
-            FindNegativeNumbers(numList, numbersToAdd);
-            sum = AddNumbers(sum, bigNumbers);
-            return sum;
-        }
-
-        private static int AddNumbers(int sum, List<int> bigNumbers)
-        {
-            foreach (int number in bigNumbers)
-            {
-                sum = sum + number;
-            }
-            return sum;
-        }
-
-        private static void FindNegativeNumbers(List<int> numList, List<int> numbersToAdd)
-        {
-            foreach (int num in numbersToAdd)
-            {
-                if (num < 0) numList.Add(num);
-            }
-        }
-
-        private static List<int> FindBigNumbers(List<int> numbersToAdd)
-        {
-            var bigNumbers = new List<int>();
-            foreach (int num in numbersToAdd)
-            {
-                var smallNumber = IgnoreBigNumbers(num);
-                bigNumbers.Add(smallNumber);
-            }
-
-            return bigNumbers;
         }
 
         private static List<int> GetNumbers(string[] numbers)
@@ -79,8 +34,38 @@ namespace StringCalculator
                 Int32.TryParse(number, out var num);
                 numbersToAdd.Add(num);
             }
-
             return numbersToAdd;
+        }
+
+        private static List<int> FindNegativeNumbers(List<int> numbersToAdd)
+        {
+            var numList = new List<int>();
+            foreach (int num in numbersToAdd)
+            {
+                if (num < 0) numList.Add(num);
+            }
+            return ThrowsException(numList);
+        }
+
+        private static List<int> ThrowsException(List<int> numList)
+        {
+            if (numList.Count > 0)
+            {
+                var message = "Negatives not allowed: ";
+                message = String.Concat(message, String.Join(", ", numList));
+                throw new ArgumentException(message);
+            }
+            return numList;
+        }
+        private static List<int> FindBigNumbers(List<int> numbersToAdd)
+        {
+            var bigNumbers = new List<int>();
+            foreach (int num in numbersToAdd)
+            {
+                var smallNumber = IgnoreBigNumbers(num);
+                bigNumbers.Add(smallNumber);
+            }
+            return bigNumbers;
         }
 
         private static int IgnoreBigNumbers(int num)
@@ -88,5 +73,15 @@ namespace StringCalculator
             if (num >= 1000) num = 0;
             return num;
         }
+
+        private static int AddNumbers(List<int> bigNumbers)
+        {
+            var sum = 0;
+            foreach (int number in bigNumbers)
+            {
+                sum = sum + number;
+            }
+            return sum;
+        } 
     }
 }
