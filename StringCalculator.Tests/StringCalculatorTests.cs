@@ -114,5 +114,24 @@ namespace StringCalculator.Tests
             // assert
             Assert.Equal(("1 2 3"), value.Trim(' '));// removes whitespace at start and end of string
         }
+        [Fact]
+        public void Allow_Multiple_Delimiters()
+        {
+            // arrange
+            var calculate = new Calculator();
+            // act
+            var result = calculate.Add("//[*][%]\n1*2%3");
+            // assert
+            Assert.Equal(6, result);
+        }
+        [Fact]
+        public void Handle_Multiple_Delimiters_With_Length_Longer_Than_One_Character()
+        {
+            var calculate = new Calculator();
+            // act
+            var result = calculate.Add("//[***][#][%]\n1***2#3%4");
+            // assert
+            Assert.Equal(10, result);
+        }
     }
 }

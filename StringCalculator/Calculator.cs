@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace StringCalculator
 {
@@ -13,7 +14,7 @@ namespace StringCalculator
         {
             if (integers != " ")
             {
-                var numbers = integers.Split(',', '\n', ';', '*');
+                var numbers = Regex.Split(integers, @"\D+");
                 var numList = new List<int>();
                 var sum = 0;
                 List<int> numbersToAdd = GetNumbers(numbers);
@@ -79,7 +80,7 @@ namespace StringCalculator
             var sum = 0;
             foreach (int number in bigNumbers)
             {
-                sum = sum + number;
+                sum = sum + number; // TODO: why does this work?
             }
             return sum;
         } 
