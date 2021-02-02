@@ -11,7 +11,7 @@ namespace StringCalculator.Tests
         public void Returns_Zero_If_Parameter_Is_Empty_String()
         {
             // arrange
-           // var calculate = new Calculator();
+            // var calculate = new Calculator();
             //var expected = 0;
             // act
             //var result = calculate.Add("");
@@ -92,13 +92,27 @@ namespace StringCalculator.Tests
             Assert.Equal(6, result);
         }
         [Fact]
-        public void testName()
+        public void Regex_Split()
         {
             // arrange
             var text = "1 One, 2 Two, 3 Three is good.";
-            var pattern = Regex.Split(text, @"\D+");
+            var values = Regex.Split(text, @"\D+");
+            var newList = new List<string>();
+            foreach (string value in values)
+            {
+                if (value != string.Empty) newList.Add(value);// removes empty string in array
+            }
             // assert
-            Assert.Equal(new string[] { "1", "2", "3" }, pattern);
+            Assert.Equal(new string[] { "1", "2", "3" }, newList);
+        }
+        [Fact]
+        public void Regex_Replace()
+        {
+            // arrange
+            var text = "1 One, 2 Two, 3 Three is good.";
+            string value = Regex.Replace(text, @"\D+", " ");
+            // assert
+            Assert.Equal(("1 2 3"), value.Trim(' '));// removes whitespace at start and end of string
         }
     }
 }
