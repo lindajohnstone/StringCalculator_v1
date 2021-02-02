@@ -13,10 +13,9 @@ namespace StringCalculator
         {
             if (integers != " ")
             {
-                var sum = 0;
                 var numbers = integers.Split(',', '\n', ';', '*');
                 var numList = new List<int>();
-                sum = FindNumbers(sum, numbers, numList);
+                var sum = FindNumbers(numbers, numList);
                 ThrowsException(numList);
                 return sum;
             }
@@ -33,21 +32,55 @@ namespace StringCalculator
             }
         }
 
-        private static int FindNumbers(int sum, string[] numbers, List<int> numList)
+        private static int FindNumbers(string[] numbers, List<int> numList)
         {
-            foreach (string number in numbers)
+            var sum = 0;
+            List<int> numbersToAdd = GetNumbers(numbers);
+            List<int> bigNumbers = FindBigNumbers(numbersToAdd);
+            FindNegativeNumbers(numList, numbersToAdd);
+            sum = AddNumbers(sum, bigNumbers);
+            return sum;
+        }
+
+        private static int AddNumbers(int sum, List<int> bigNumbers)
+        {
+            foreach (int number in bigNumbers)
             {
-                Int32.TryParse(number, out var num);
-                num = IgnoreBigNumbers(num);
-                AddNegativeNumbersToList(numList, num);
-                sum = sum + num;
+                sum = sum + number;
             }
             return sum;
         }
 
-        private static void AddNegativeNumbersToList(List<int> numList, int num)
+        private static void FindNegativeNumbers(List<int> numList, List<int> numbersToAdd)
         {
-            if (num < 0) numList.Add(num);
+            foreach (int num in numbersToAdd)
+            {
+                if (num < 0) numList.Add(num);
+            }
+        }
+
+        private static List<int> FindBigNumbers(List<int> numbersToAdd)
+        {
+            var bigNumbers = new List<int>();
+            foreach (int num in numbersToAdd)
+            {
+                var smallNumber = IgnoreBigNumbers(num);
+                bigNumbers.Add(smallNumber);
+            }
+
+            return bigNumbers;
+        }
+
+        private static List<int> GetNumbers(string[] numbers)
+        {
+            var numbersToAdd = new List<int>();
+            foreach (string number in numbers)
+            {
+                Int32.TryParse(number, out var num);
+                numbersToAdd.Add(num);
+            }
+
+            return numbersToAdd;
         }
 
         private static int IgnoreBigNumbers(int num)

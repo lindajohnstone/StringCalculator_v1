@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using Xunit;
 
 namespace StringCalculator.Tests
@@ -62,7 +63,7 @@ namespace StringCalculator.Tests
             Assert.Equal("Negatives not allowed: -1, -3", result.Message);
         }
         [Fact]
-        public void testName()
+        public void String_Methods()
         {
             var hello = "Hello";
             var world = "World";
@@ -89,6 +90,15 @@ namespace StringCalculator.Tests
             var result = calculate.Add("//[***]\n1***2***3");
             // assert
             Assert.Equal(6, result);
+        }
+        [Fact]
+        public void testName()
+        {
+            // arrange
+            var text = "1 One, 2 Two, 3 Three is good.";
+            var pattern = Regex.Split(text, @"\D+");
+            // assert
+            Assert.Equal(new string[] { "1", "2", "3" }, pattern);
         }
     }
 }
