@@ -124,14 +124,27 @@ namespace StringCalculator.Tests
             // assert
             Assert.Equal(6, result);
         }
+        
         [Fact]
         public void Handle_Multiple_Delimiters_With_Length_Longer_Than_One_Character()
         {
+            // arrange
             var calculate = new Calculator();
             // act
             var result = calculate.Add("//[***][#][%]\n1***2#3%4");
             // assert
             Assert.Equal(10, result);
         }
+        /*
+        [Fact]
+        public void Handle_Delimiters_That_Have_Numbers_As_Part_Of_Them_Number_Cannot_Be_On_Edge()
+        {
+            // arrange
+            var calculate = new Calculator();
+            // act
+            var result = calculate.Add("//[*1*][%]\n1*1*2%3");
+            // assert
+            Assert.Equal(6, result);
+        } */
     }
 }

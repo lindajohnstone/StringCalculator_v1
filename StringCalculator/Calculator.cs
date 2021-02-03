@@ -14,11 +14,12 @@ namespace StringCalculator
         {
             if (integers != " ")
             {
-                var numbers = Regex.Split(integers, @"\D+");
+                var numbers = Regex.Split(integers, "[*#%\n]{1,3}");
+                //var numbers = integers.Split(',', '\n', ';', '*', '%');
                 var numList = new List<int>();
                 var sum = 0;
                 List<int> numbersToAdd = GetNumbers(numbers);
-                FindNegativeNumbers(numbersToAdd);
+                ValidateNegativeNumbers(numbersToAdd);
                 ThrowsException(numList);
                 List<int> bigNumbers = FindBigNumbers(numbersToAdd);
                 sum = AddNumbers(bigNumbers);
@@ -38,6 +39,12 @@ namespace StringCalculator
             return numbersToAdd;
         }
 
+        private static void ValidateNegativeNumbers(List<int> numbersToAdd)
+        {
+            List<int> numList = FindNegativeNumbers(numbersToAdd);
+            ThrowsException(numList);
+        }
+
         private static List<int> FindNegativeNumbers(List<int> numbersToAdd)
         {
             var numList = new List<int>();
@@ -45,10 +52,10 @@ namespace StringCalculator
             {
                 if (num < 0) numList.Add(num);
             }
-            return ThrowsException(numList);
+            return numList;
         }
 
-        private static List<int> ThrowsException(List<int> numList)
+        private static void ThrowsException(List<int> numList)
         {
             if (numList.Count > 0)
             {
@@ -56,31 +63,23 @@ namespace StringCalculator
                 message = String.Concat(message, String.Join(", ", numList));
                 throw new ArgumentException(message);
             }
-            return numList;
         }
         private static List<int> FindBigNumbers(List<int> numbersToAdd)
         {
             var bigNumbers = new List<int>();
             foreach (int num in numbersToAdd)
             {
-                var smallNumber = IgnoreBigNumbers(num);
-                bigNumbers.Add(smallNumber);
+                if(num < 1000) bigNumbers.Add(num);
             }
             return bigNumbers;
-        }
-
-        private static int IgnoreBigNumbers(int num)
-        {
-            if (num >= 1000) num = 0;
-            return num;
         }
 
         private static int AddNumbers(List<int> bigNumbers)
         {
             var sum = 0;
-            foreach (int number in bigNumbers)
+            foreach (var number in bigNumbers)
             {
-                sum = sum + number; // TODO: why does this work?
+                sum = sum + number; 
             }
             return sum;
         } 
