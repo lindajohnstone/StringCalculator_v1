@@ -14,7 +14,9 @@ namespace StringCalculator
         {
             if (integers != " ")
             {
-                var numbers = Regex.Split(integers, "[*#%\n]?[^-\\d]");
+                var pattern = @"\*1\*";
+                var value = Regex.Replace(integers, pattern, " ");
+                var numbers = Regex.Split(value, "[*#%\n]?[^-\\d]");
                 var numList = new List<int>();
                 var sum = 0;
                 List<int> numbersToAdd = GetNumbers(numbers);
