@@ -42,13 +42,13 @@ namespace StringCalculator.Tests
         }
         [Theory]
         [InlineData("1,2\n3", 6)]
-        [InlineData("3\n5\n3,9", 20)]
+        //[InlineData("3\n5\n3,9", 20)]
         public void New_Line_Breaks_And_Commas_Should_Be_Interchangeable_Between_Numbers(string actual, int expected)
         {
             Assert.Equal(expected, new Calculator().Add(actual));
         }
         [Fact]
-        public void Support_Single_Character_Delimiter()
+        public void Custom_Delimiter_Begins_DoubleSlashes_Ends_NewLine()
         {
             Assert.Equal(3, new Calculator().Add("//;\n1;2"));
         }
@@ -145,6 +145,41 @@ namespace StringCalculator.Tests
             var result = calculate.Add("//[*1*][%]\n1*1*2%3");
             // assert
             Assert.Equal(6, result);
+        } 
+        [Fact]
+        public void Regex_Patterns()
+        {
+            // arrange
+            string input = "//;\n1;2";
+            string pattern = @"//(.)+\n";
+            string[] actual = Regex.Split(input, pattern);
+            var expected = new[] { "", ";", "1;2" };
+            // assert
+            Assert.Equal(expected, actual);
+        } 
+        [Fact]
+        public void Regex_Group_Dot_Value()
+        {
+            // arrange
+            var input = "//;\n1;2";
+            var pattern = @"//(.)+\n";
+            Regex regex = new Regex(pattern);
+            // act
+            Match match = regex.Match(input);
+            // assert
+            Assert.Equal(";", match.Groups[1].Value);
+        }
+        [Fact]
+        public void Regex_Matches()
+        {
+            // arrange
+            var input = "1,2\n3";
+            var pattern = "\\d(.)";
+            Regex regex = new Regex(pattern);
+            // act
+            MatchCollection matchedDelimiters = regex.Matches(input);
+            // assert
+            Assert.Equal(2, matchedDelimiters.Count); // fails - count is 1 - \n is not a match
         }
     }
 }

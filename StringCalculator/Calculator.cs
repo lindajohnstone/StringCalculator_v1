@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace StringCalculator
@@ -14,16 +15,43 @@ namespace StringCalculator
         {
             if (integers != " ")
             {
-                var pattern = @"\*1\*";
-                var value = Regex.Replace(integers, pattern, " ");
-                var numbers = Regex.Split(value, "[*#%\n]?[^-\\d]");
-                var numList = new List<int>();
-                var sum = 0;
-                List<int> numbersToAdd = GetNumbers(numbers);
+                var delimiter = " ";
+                var delimiterList = new List<string>();
+                /* var pattern = @"//(.)+\n";
+                if (integers.StartsWith("//") && integers.Contains("\n"))
+                {
+                    var newString = Regex.Split(integers, pattern);
+                    delimiter = newString[1];
+                    var nums = newString[2];// integers with delimiter
+                } */
+                var regex = new Regex("\\d(.)");
+                Match match = regex.Match(integers);
+                if (match.Success)
+                {
+                    delimiter = match.Groups[1].Value;
+                    // var delimiterString = Regex.Replace(integers, "\\d", " ");
+                    // var delimiterArray = delimiterString.Distinct().ToArray();
+                    // foreach (var limiter in delimiterArray)
+                    // {
+                    //     delimiterList.Add(delimiter);
+                    // }
+                }
+                // var numbers = new List<string>();
+                // foreach (var limiter in delimiterList)
+                // {
+                //     var nums = integers.Split(delimiter);
+                //     foreach(var num in nums)
+                //     {
+                //         numbers.Add(num);
+                //     }
+                // }
+                var numbers = integers.Split(delimiter);
+                
+                var sum = 0; 
+                List<int> numbersToAdd = GetNumbers(numbers.ToArray());
                 ValidateNegativeNumbers(numbersToAdd);
-                ThrowsException(numList);
-                List<int> bigNumbers = FindBigNumbers(numbersToAdd);
-                sum = AddNumbers(bigNumbers);
+                List<int> bigNumbers = IgnoreBigNumbers(numbersToAdd);
+                sum = Sum(bigNumbers);
                 return sum;
             }
             return 0;
@@ -65,20 +93,20 @@ namespace StringCalculator
                 throw new ArgumentException(message);
             }
         }
-        private static List<int> FindBigNumbers(List<int> numbersToAdd)
+        private static List<int> IgnoreBigNumbers(List<int> numbersToAdd) // TODO: new name? adds only small numbers to list; big numbers are disgarded
         {
-            var bigNumbers = new List<int>();
+            var numbers = new List<int>();
             foreach (int num in numbersToAdd)
             {
-                if(num < 1000) bigNumbers.Add(num);
+                if (num < 1000) numbers.Add(num);
             }
-            return bigNumbers;
+            return numbers;
         }
 
-        private static int AddNumbers(List<int> bigNumbers)
+        private static int Sum(List<int> numbers)
         {
             var sum = 0;
-            foreach (var number in bigNumbers)
+            foreach (var number in numbers)
             {
                 sum = sum + number; 
             }
