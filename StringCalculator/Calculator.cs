@@ -16,39 +16,18 @@ namespace StringCalculator
             if (integers != " ")
             {
                 var delimiter = " ";
-                var delimiterList = new List<string>();
-                /* var pattern = @"//(.)+\n";
-                if (integers.StartsWith("//") && integers.Contains("\n"))
-                {
-                    var newString = Regex.Split(integers, pattern);
-                    delimiter = newString[1];
-                    var nums = newString[2];// integers with delimiter
-                } */
+
                 var regex = new Regex("\\d(.)");
                 Match match = regex.Match(integers);
                 if (match.Success)
                 {
                     delimiter = match.Groups[1].Value;
-                    // var delimiterString = Regex.Replace(integers, "\\d", " ");
-                    // var delimiterArray = delimiterString.Distinct().ToArray();
-                    // foreach (var limiter in delimiterArray)
-                    // {
-                    //     delimiterList.Add(delimiter);
-                    // }
                 }
-                // var numbers = new List<string>();
-                // foreach (var limiter in delimiterList)
-                // {
-                //     var nums = integers.Split(delimiter);
-                //     foreach(var num in nums)
-                //     {
-                //         numbers.Add(num);
-                //     }
-                // }
-                var numbers = integers.Split(delimiter);
-                
+                string value = Regex.Replace(integers, "\n", delimiter);
+                var numbers = value.Split(delimiter);
+
                 var sum = 0; 
-                List<int> numbersToAdd = GetNumbers(numbers.ToArray());
+                List<int> numbersToAdd = GetNumbers(numbers);
                 ValidateNegativeNumbers(numbersToAdd);
                 List<int> bigNumbers = IgnoreBigNumbers(numbersToAdd);
                 sum = Sum(bigNumbers);

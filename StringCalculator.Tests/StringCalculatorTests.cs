@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using Xunit;
 
@@ -42,10 +43,30 @@ namespace StringCalculator.Tests
         }
         [Theory]
         [InlineData("1,2\n3", 6)]
-        //[InlineData("3\n5\n3,9", 20)]
+        [InlineData("3\n5\n3,9", 20)]
         public void New_Line_Breaks_And_Commas_Should_Be_Interchangeable_Between_Numbers(string actual, int expected)
         {
             Assert.Equal(expected, new Calculator().Add(actual));
+        }
+        [Fact]
+        public void Delimiter_And_New_Line_Interchangeable_Between_Numbers()
+        {
+            // arrange
+            var calculate = new Calculator();
+            var input = "1,2\n3";
+            var regex = new Regex("\\d(.)+\\d");
+            var delimiter = " ";
+            Match match = regex.Match(input);
+            if (match.Success)
+            {
+                delimiter = match.Groups[1].Value;
+            }
+            string value = Regex.Replace(input, "\n", delimiter);
+            var expected = new[] { "1", "2", "3" };
+            // act
+            var result = value.Split(delimiter);
+            // assert
+            Assert.Equal(expected, result);
         }
         [Fact]
         public void Custom_Delimiter_Begins_DoubleSlashes_Ends_NewLine()
@@ -156,13 +177,24 @@ namespace StringCalculator.Tests
             var expected = new[] { "", ";", "1;2" };
             // assert
             Assert.Equal(expected, actual);
-        } 
+        }
+        [Fact]
+        public void Regex_Number_With_Delimiter()
+        {
+            // arrange
+            string input = "1,2\n3";
+            string pattern = "\\d(.)+\\d";
+            string[] actual = Regex.Split(input, pattern);
+            var expected = new[] { "", ",", "\n3" };// does not pick up \n on its' own
+            // assert
+            Assert.Equal(expected, actual);
+        }
         [Fact]
         public void Regex_Group_Dot_Value()
         {
             // arrange
             var input = "//;\n1;2";
-            var pattern = @"//(.)+\n";
+            var pattern = @"//(.+)\n";
             Regex regex = new Regex(pattern);
             // act
             Match match = regex.Match(input);
@@ -174,12 +206,43 @@ namespace StringCalculator.Tests
         {
             // arrange
             var input = "1,2\n3";
-            var pattern = "\\d(.)";
+            var pattern = "\\d(.)+\\d";
             Regex regex = new Regex(pattern);
+            var delimiterList = new List<string>();
             // act
             MatchCollection matchedDelimiters = regex.Matches(input);
+            Match matches = regex.Match(input);
+            if (matches.Success)
+            {
+                foreach (Match m in regex.Matches(input))
+                {
+                    delimiterList.Add(m.Value);
+                }
+            }
             // assert
-            Assert.Equal(2, matchedDelimiters.Count); // fails - count is 1 - \n is not a match
+            //Assert.Equal(2, matchedDelimiters.Count); // fails - count is 1 - \n is not a match
+            Assert.Equal(2, delimiterList.Count); //fails - as above
+        }
+        [Fact]
+        public void Regex_Replace_Find_Delimiter_Count()
+        {
+            // arrange
+            var input = "1,2\n3";
+            var pattern = "\\d(.)+\\d";
+            Regex regex = new Regex(pattern);
+            List<string> delimiterList = new List<string>();
+            // act
+            Match matches = regex.Match(input);
+            if (matches.Success)
+            {
+                foreach (Match m in regex.Matches(input, matches.Index + matches.Length))
+                {
+                    string delimiterString = Regex.Replace(input, "\\d", " ");
+                    delimiterList.Add(delimiterString);
+                }
+            }
+            // assert
+            Assert.Equal(2, delimiterList.Count); //fails - count is 0
         }
     }
 }
