@@ -202,6 +202,23 @@ namespace StringCalculator.Tests
             Assert.Equal(";", match.Groups[1].Value);
         }
         [Fact]
+        public void Regex_Matches_Multiple_Number_Of_Same_Delimiter()
+        {
+            // arrange
+            var input = "//[***]\n1***2***3";
+            var pattern = @"\/\/\[(.+){1,3}\]\n";
+            Regex regex = new Regex(pattern);
+            var delimiter = "";
+            // act
+            Match match = regex.Match(input);
+            if (match.Success)
+            {
+                delimiter = match.Groups[1].Value;
+            }
+            // assert
+            Assert.Equal("***", delimiter);
+        }
+        [Fact]
         public void Regex_Matches()
         {
             // arrange
@@ -220,29 +237,26 @@ namespace StringCalculator.Tests
                 }
             }
             // assert
-            //Assert.Equal(2, matchedDelimiters.Count); // fails - count is 1 - \n is not a match
-            Assert.Equal(2, delimiterList.Count); //fails - as above
+            Assert.Equal(1, matchedDelimiters.Count); 
+            Assert.Equal(1, delimiterList.Count);
+            Assert.Equal("1,2", delimiterList[0]);
         }
         [Fact]
-        public void Regex_Replace_Find_Delimiter_Count()
+        public void Regex_Match_Returns_False_When_No_Match()
         {
             // arrange
-            var input = "1,2\n3";
-            var pattern = "\\d(.)+\\d";
+            var input = "1,2,3";
+            var pattern = @"\/\/\[(.+){1,3}\]\n";
             Regex regex = new Regex(pattern);
-            List<string> delimiterList = new List<string>();
+            var delimiter = "";
             // act
-            Match matches = regex.Match(input);
-            if (matches.Success)
+            Match match = regex.Match(input);
+            if (match.Success)
             {
-                foreach (Match m in regex.Matches(input, matches.Index + matches.Length))
-                {
-                    string delimiterString = Regex.Replace(input, "\\d", " ");
-                    delimiterList.Add(delimiterString);
-                }
+                delimiter = match.Groups[1].Value;
             }
             // assert
-            Assert.Equal(2, delimiterList.Count); //fails - count is 0
+            Assert.Equal(false, match.Success);
         }
     }
 }

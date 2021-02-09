@@ -16,14 +16,25 @@ namespace StringCalculator
             if (integers != " ")
             {
                 var delimiter = " ";
-
-                var regex = new Regex("\\d(.)");
-                Match match = regex.Match(integers);
-                if (match.Success)
+                var pattern = new Regex("//[(.+){1,}][(.*){1,}]\n");
+                Match m = pattern.Match(integers);
+                if (!m.Success)
                 {
-                    delimiter = match.Groups[1].Value;
+                    // find delimiter
+                    var regex = new Regex("\\d+(.)");
+                    Match match = regex.Match(integers);
+                    if (match.Success)
+                    {
+                        delimiter = match.Groups[1].Value;
+                    }
                 }
-                string value = Regex.Replace(integers, "\n", delimiter);
+            // if line 20 is true
+                if (m.Success)
+                {
+                     delimiter = m.Groups[1].Value;
+                }
+                // replace \n with delimiter
+                string value = Regex.Replace(integers, "\n", delimiter);// TODO: is this a valid way to solve the problem
                 var numbers = value.Split(delimiter);
 
                 var sum = 0; 
