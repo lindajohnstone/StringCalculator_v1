@@ -16,25 +16,42 @@ namespace StringCalculator
             if (integers != " ")
             {
                 var delimiter = " ";
-                var pattern = new Regex("//[(.+){1,}][(.*){1,}]\n");
+                var pattern = new Regex("//\\[(.+)?\\]+\n");
                 Match m = pattern.Match(integers);
-                if (!m.Success)
-                {
-                    // find delimiter
-                    var regex = new Regex("\\d+(.)");
-                    Match match = regex.Match(integers);
-                    if (match.Success)
-                    {
-                        delimiter = match.Groups[1].Value;
-                    }
-                }
-            // if line 20 is true
                 if (m.Success)
                 {
-                     delimiter = m.Groups[1].Value;
+                    var newPattern = "\\[(.)\\]";
+                    Regex newRegex = new Regex(newPattern);// TODO: replacing lines 24 - 31 with while (match.Success) in document fails step 9
+                    var delimiterList = new List<string>();
+                    foreach (Match match in newRegex.Matches(integers))
+                    {
+                        delimiterList.Add(m.Groups[1].Value);
+                    }
+                    // need to tell how to find more
+                    delimiter = m.Groups[1].Value;
+                    // My logic for Step 10 is as follows:
+                    // If the first regex(//[(.+)?]+\n) finds a match
+                    // •	Check the second regex([(.+)] 
+                    // •	If a match found, check if there are more than one
+                    // •	If more than one match found,
+                    // •	Create a new list(outside loops)
+                    // •	Add each delimiter value to list
+                    // •	Foreach through the list to add the numbers to the numbers list 
+                    // •	If only one match 
+                    // •	Add the value of the first group
+                }
+                if (!m.Success)
+                {
+                     var regex = new Regex("\\d+(.)");
+                     Match match = regex.Match(integers);
+                     if (match.Success)
+                     {
+                        delimiter = match.Groups[1].Value;
+                     }
                 }
                 // replace \n with delimiter
                 string value = Regex.Replace(integers, "\n", delimiter);// TODO: is this a valid way to solve the problem
+                // for each delimiter in delimiter list:
                 var numbers = value.Split(delimiter);
 
                 var sum = 0; 
