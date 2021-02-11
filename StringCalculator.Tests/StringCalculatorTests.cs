@@ -104,23 +104,23 @@ namespace StringCalculator.Tests
             // assert
             Assert.Equal(6, result);
         }
-        [Fact]
-        public void Step_10_Allow_Multiple_Delimiters()
+        [Theory]
+        [InlineData("//[*][%]\n1*2%3", 6)]
+       // [InlineData("//[*][%][$]\n1*2%3$4", 10)]
+        public void Step_10_Allow_Multiple_Delimiters(string input, int expected)
         {
             // arrange
             var calculate = new Calculator();
             // act
-            var result = calculate.Add("//[*][%]\n1*2%3");
+            var result = calculate.Add(input);
             // assert
-            Assert.Equal(6, result);
+            Assert.Equal(expected, result);
         }
         [Fact]
         public void Step_10_More_Than_One_Regex()
         {
             var input = "//[*][%]\n1*2%3";
-            var pattern = "//[(.+?)]\n";
             var newPattern = "\\[(.)\\]";
-            Regex regex = new Regex(pattern);
             Regex newRegex = new Regex(newPattern);
             var delimiterList = new List<string>();
             // act
