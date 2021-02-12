@@ -15,20 +15,18 @@ namespace StringCalculator
         {
             if (integers != " ")
             {
-                var delimiter = " ";
-                var pattern = new Regex("//\\[(.+)?\\]+\n");
-                Match m = pattern.Match(integers);
-                if (m.Success)
+                //var delimiter = " ";
+                String delimiter = ExtractDelimiter(integers);
+                if (delimiter != null)
                 {
                     var newPattern = "\\[(.)\\]";
                     Regex newRegex = new Regex(newPattern);// TODO: replacing lines 24 - 31 with while (match.Success) in document fails step 9
                     var delimiterList = new List<string>();
                     foreach (Match match in newRegex.Matches(integers))
                     {
-                        delimiterList.Add(m.Groups[1].Value);
+                        delimiterList.Add(delimiter);
                     }
                     // need to tell how to find more
-                    delimiter = m.Groups[1].Value;
                     // My logic for Step 10 is as follows:
                     // If the first regex(//[(.+)?]+\n) finds a match
                     // •	Check the second regex([(.+)] 
@@ -40,21 +38,21 @@ namespace StringCalculator
                     // •	If only one match 
                     // •	Add the value of the first group
                 }
-                if (!m.Success)
+                else
                 {
-                     var regex = new Regex("\\d+(.)");
-                     Match match = regex.Match(integers);
-                     if (match.Success)
-                     {
+                    var regex = new Regex("\\d+(.)");
+                    Match match = regex.Match(integers);
+                    if (match.Success)
+                    {
                         delimiter = match.Groups[1].Value;
-                     }
+                    }
                 }
                 // replace \n with delimiter
                 string value = Regex.Replace(integers, "\n", delimiter);// TODO: is this a valid way to solve the problem
                 // for each delimiter in delimiter list:
                 var numbers = value.Split(delimiter);
 
-                var sum = 0; 
+                var sum = 0;
                 List<int> numbersToAdd = GetNumbers(numbers);
                 ValidateNegativeNumbers(numbersToAdd);
                 List<int> bigNumbers = IgnoreBigNumbers(numbersToAdd);
@@ -62,6 +60,13 @@ namespace StringCalculator
                 return sum;
             }
             return 0;
+        }
+
+        public string ExtractDelimiter(string src) // TODO: originally private static string - changed for testing purposes
+        {
+            var pattern = new Regex("//\\[(.+)?\\]+\n");
+            Match matchResults = pattern.Match(src);
+            return matchResults.Success ? matchResults.Groups[1].Value : null;
         }
 
         private static List<int> GetNumbers(string[] numbers)

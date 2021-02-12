@@ -174,5 +174,23 @@ namespace StringCalculator.Tests
             // assert
             Assert.Equal(6, result);
         } 
+        [Theory]
+        [InlineData("//;\n1;2", null)] // no [] - should still find delimiter = bug to fix
+        [InlineData("", null)] // Add("") should return 0
+        [InlineData("1", null)]
+        [InlineData("1\n2,3", null)]
+        [InlineData("//[*][%]\n1*2%3", "*][%")]
+        [InlineData("//[***][#][%]\n1***2#3%4", "***][#][%")]
+        [InlineData("//[***]\n1***2***3)", "***")]
+        [InlineData("//[*1*][%]\n1*1*2%3", "*1*][%")]
+        public void Extract_Delimiters(string src, string expected)
+        {
+            // arrange
+            var calculate = new Calculator();
+            // act
+            var result = calculate.ExtractDelimiter(src);
+            // assert
+            Assert.Equal(expected, result);
+        }
     }
 }
